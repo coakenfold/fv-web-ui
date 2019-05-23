@@ -46,7 +46,7 @@ export default function withForm(ComposedFilter, publishWarningEnabled = false) 
         showCancelWarning: false,
         saved: false,
       }
-      ;['_onRequestSaveForm', '_onRequestCancelForm'].forEach((method) => (this[method] = this[method].bind(this)))
+      ;['_onRequestSaveForm', '_onRequestSaveAndPublishForm', '_onRequestCancelForm'].forEach((method) => (this[method] = this[method].bind(this)))
     }
 
     _getComputeItem(props) {
@@ -57,7 +57,41 @@ export default function withForm(ComposedFilter, publishWarningEnabled = false) 
       return ProviderHelpers.getEntry(item.get('entity'), itemId)
     }
 
+    // _saveForm(portal, e) {
+    //   const formValue = this.refs['form_' + this.props.type].getValue()
+
+    //   // Passed validation
+    //   if (formValue) {
+    //     this.props.saveMethod(portal, formValue)
+
+    //     this.setState({
+    //       saved: true,
+    //       formValue: formValue,
+    //     })
+    //   } else {
+    //     window.scrollTo(0, 0)
+    //   }
+    // }
     _onRequestSaveForm(portal, e) {
+      // Prevent default behaviour
+      e.preventDefault()
+
+      const formValue = this.refs['form_' + this.props.type].getValue()
+
+      // Passed validation
+      if (formValue) {
+        this.props.saveMethod(portal, formValue)
+
+        this.setState({
+          saved: true,
+          formValue: formValue,
+        })
+      } else {
+        window.scrollTo(0, 0)
+      }
+    }
+
+    _onRequestSaveAndPublishForm(portal, e) {
       // Prevent default behaviour
       e.preventDefault()
 
@@ -138,7 +172,13 @@ export default function withForm(ComposedFilter, publishWarningEnabled = false) 
                     <RaisedButton
                       onClick={this._onRequestSaveForm.bind(this, computeItem)}
                       primary
+                      style={{ marginRight: '10px' }}
                       label={intl.trans('save', 'Save', 'first')}
+                    />
+                    <RaisedButton
+                      onClick={this._onRequestSaveAndPublishForm.bind(this, computeItem)}
+                      primary
+                      label={intl.trans('save and publish', 'Save + Publish', 'first')}
                     />
                   </div>
 
@@ -163,7 +203,13 @@ export default function withForm(ComposedFilter, publishWarningEnabled = false) 
                     <RaisedButton
                       onClick={this._onRequestSaveForm.bind(this, computeItem)}
                       primary
+                      style={{ marginRight: '10px' }}
                       label={intl.trans('save', 'Save', 'first')}
+                    />
+                    <RaisedButton
+                      onClick={this._onRequestSaveAndPublishForm.bind(this, computeItem)}
+                      primary
+                      label={intl.trans('save and publish', 'Save + Publish', 'first')}
                     />
 
                     <Popover
